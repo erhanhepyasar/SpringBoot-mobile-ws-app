@@ -19,7 +19,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 		this.userDetailsService = userDetailsService;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
-
+	
+	// Used to configure some web service endpoints as public and others protected
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
