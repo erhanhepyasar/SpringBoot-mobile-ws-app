@@ -24,8 +24,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
-			.antMatchers(HttpMethod.POST, "/users").permitAll() // permit this
-			.anyRequest().authenticated(); // authentication needed for all others
+			.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
+			.permitAll() // Set as public 
+			.anyRequest().authenticated().and()
+			.addFilter(getAuthenticationFilter()) // Those needs to be authenticated
+			.addFilter(new AuthorizationFilter(authenticationManager()));
 	}
 
 	@Override
@@ -33,7 +36,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 	}
 
-	
+	public AuthenticationFilter getAuthenticationFilter() throws Exception{
+		final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+		filter.setFilterProcessesUrl("/users/login");
+		return filter;
+	}
 	
 	
 }
